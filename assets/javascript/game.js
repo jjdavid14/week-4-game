@@ -62,6 +62,7 @@ var game = {
 		// Append to #character-list
 		$("#character-list").append(toAppend);
 	},
+	// Returns the object containing the provided last name
 	getCharacterByLastName: function(lastName) {
 		for(var i = 0; i < this.availableCharacters.length; i++) {
 			if(this.availableCharacters[i].name.toLowerCase().includes(lastName)) {
@@ -69,17 +70,24 @@ var game = {
 			}
 		}
 	},
+	// Removes the object passed in from availableCharacters
 	removeCharacterFromList: function(character) {
 		var index = this.availableCharacters.indexOf(character);
 		this.availableCharacters.splice(index,1);
 	}
 }
 
+var backgroundAudio = new Audio("assets/audio/background.mp3");
+var battleAudio = new Audio("assets/audio/battle.mp3");
+
+// Sets up a new game
 function initiateNewGame() {
 	game.newGame();
 	setUpEventListeners();
+	backgroundAudio.play();
 }
 
+// Changes the message on the main page
 function changeLabel(msg, newClass, state) {
 	$("#label").removeClass("text-danger text-success text-warning text-primary");
 	$("#label").text(msg.toUpperCase());
@@ -87,6 +95,7 @@ function changeLabel(msg, newClass, state) {
 	$("#label").attr("data", state);
 }
 
+// Hover event that changes the image of the hovered card
 function attachHover(index) {
 	// Separate the character's first name and last name
 	//var currentCharacter = game.availableCharacters[index].name.split(" ");
@@ -102,11 +111,12 @@ function attachHover(index) {
 			$("#" + currentLastName).removeClass(getCardColor());
 			$("#" + currentLastName + "-img").attr("src", "assets/images/" + currentLastName + ".jpg");
 		}
-	);
+		);
 }
 
+// Click event that sets up the hero and enemy of the game
+// Also updates the message on main page
 function attachClick(state, index) {
-
 	// Get the current character's last name
 	var currentLastName = getLastName(game.availableCharacters[index]);
 
@@ -126,13 +136,14 @@ function attachClick(state, index) {
 	});
 }
 
+// Main page display is updated
 function updateScreen() {
 	game.showCharacters();
 	setUpEventListeners();
 }
 
+// Attach events to all character cards
 function setUpEventListeners() {
-	// Attach a hover event to all character cards
 	for(var i = 0; i < game.availableCharacters.length; i++) {
 		attachHover(i);
 		attachClick($("#label").attr("data"), i);
@@ -151,13 +162,26 @@ function getCardColor() {
 	return toRet;
 }
 
+// Pops up the modal
 function showModal() {
 	changeModalBody();
 	$("#myModal").modal("show");
 }
 
-function changeModalBody() {
+// Stops background music and starts battle music when modal pops up
+$('#myModal').on('show.bs.modal', function () {
+	backgroundAudio.pause();
+	battleAudio.play();
+})
 
+// Stops battle music and starts background music when modal closes
+$('#myModal').on('hidden.bs.modal', function () {
+	battleAudio.pause();
+	backgroundAudio.play();
+})
+
+// Shows the current state of the modal
+function changeModalBody() {
 	// Get the hero's last name
 	var heroLastName = getLastName(game.hero);
 	// Get the enemy's last name
@@ -179,41 +203,35 @@ function getLastName(obj) {
 	return currentCharacter[1].toLowerCase();
 }
 
+// Function that runs when the attack button on the modal is clicked
 function attack() {
-	
+	// Hero attack enemy
+	game.enemy.health -= game.hero.currentPower;
 	// Log the hero attack
 	var heroLog = game.hero.name + " ATTACKED " + game.enemy.name + " FOR " + game.hero.currentPower + " DAMAGE!";
-	
+	// Update enery progress bar
+	$("#enemy-progress").attr("aria-valuenow", game.enemy.health / game.enemy.fullHealth * 100);
+	$("#enemy-progress").attr("style", "width: " + (game.enemy.health / game.enemy.fullHealth * 100) + "%");
+	// Increase hero attack
+	game.hero.currentPower += game.hero.basePower;
 	// Hero animation
-	$('#hero-card').addClass('animated bounceOutRight');
-	// After hero animation
-	$('#hero-card').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-		$("#hero-card").removeClass('animated bounceOutRight');
-		$('#enemy-card').addClass('animated bounce').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-			$("#enemy-card").removeClass('animated bounceOutRight');
-		});
-		// Hero attack enemy
-		game.enemy.health -= game.hero.currentPower;
-		// Increase hero attack
-		game.hero.currentPower += game.hero.basePower;
-		// Update enemy progress bar
-		$("#enemy-progress").attr("aria-valuenow", game.enemy.health / game.enemy.fullHealth * 100);
-		$("#enemy-progress").attr("style", "width: " + (game.enemy.health / game.enemy.fullHealth * 100) + "%");
-	});
-
+	$("#hero-card").animateCss("bounceOutRight");
 
 
 	// Check if enemy defeated
 	if(game.enemy.health <= 0) {
 		// Check if user wins the game
 		if(hasWon()) {
-			// 
+			// Invoke win to change main page
 			win();
 		}
+		// Close the modal
 		$("#myModal").modal("hide");
 		// Update the progress bar of enemy
 		$("#enemy-progress").attr("aria-valuenow", "100");
 		$("#enemy-progress").attr("style", "width: 100%");
+		// Remove lingering hero animation
+		$("#hero-card").removeClass("animated bounceOutRight");
 		return;
 	}
 
@@ -224,6 +242,8 @@ function attack() {
 	$("#hero-progress").attr("style", "width: " + (game.hero.health / game.hero.fullHealth * 100) + "%");
 	// Log the enemy attack
 	var enemyLog = game.enemy.name + " COUNTER-ATTACKS " + game.hero.name + " FOR " + game.enemy.basePower + " DAMAGE!";
+	// Enemy animation
+	$("#enemy-card").animateCss("bounceOutLeft");
 
 	// Check if hero is defeated
 	if(game.hero.health <= 0) {
@@ -232,6 +252,7 @@ function attack() {
 		return;
 	}
 
+	// Update the modal
 	changeModalBody();
 
 	// Put the hero and enemy logs in a p tag
@@ -239,38 +260,55 @@ function attack() {
 	$("#battle-text").append($("<p class='text-center'>").text(enemyLog));
 }
 
+// Checks if player has won the game
 function hasWon() {
 	return game.availableCharacters.length == 0;
 }
 
+// Reset hero progress bard and display winning message
 function win() {
+	// Update the progress bar of hero
+	$("#hero-progress").attr("aria-valuenow", "100");
+	$("#hero-progress").attr("style", "width: 100%");
+	// Update main page to display winning message and show new game button
 	changeLabel("You Won!", "text-primary", 3);
 	showNewGameButton();
 }
 
+// Resets the progress bars and clears any lingering animation
+// Displays lost message
 function lost() {
+	// Update the progress bar of hero
+	$("#hero-progress").attr("aria-valuenow", "100");
+	$("#hero-progress").attr("style", "width: 100%");
+	// Update the progress bar of enemy
+	$("#enemy-progress").attr("aria-valuenow", "100");
+	$("#enemy-progress").attr("style", "width: 100%");
+	// Remove lingering hero animation
+	$("#hero-card").removeClass("animated bounceOutRight");
+	// Remove lingering enemy animation
+	$("#enemy-card").removeClass("animated bounceOutRight");
 	changeLabel("You Lost.", "text-warning", 3);
 	showNewGameButton();
 }
 
+// Appends a new game button on the main page
 function showNewGameButton() {
 	var toAppend = '<button onclick="initiateNewGame()" type="button" class="btn btn-primary btn-lg">Start a New Game</button>';
 	$("#character-list").empty();
 	$("#character-list").append(toAppend);
 }
 
+// Adds new jQuery function that adds animation
 $.fn.extend({
-    animateCss: function (animationName, callback) {
-        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        this.addClass('animated ' + animationName).one(animationEnd, function() {
-            $(this).removeClass('animated ' + animationName);
-            if (callback) {
-              callback();
-            }
-        });
-        return this;
-    }
+	animateCss: function (animationName) {
+		var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+		this.addClass('animated ' + animationName).one(animationEnd, function() {
+			$(this).removeClass('animated ' + animationName);
+		});
+		return this;
+	}
 });
 
-// Start a new game
+// Start a new game on load
 initiateNewGame();
