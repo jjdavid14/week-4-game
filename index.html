@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Starwars Game</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	<!-- Google Font -->
+	<link href="https://fonts.googleapis.com/css?family=Stardos+Stencil:400,700" rel="stylesheet">
+	<!-- Star Wars Glyphicons -->
+	<link rel="stylesheet" href="assets/starwars-glyphicons/css/starwars-glyphicons.css">
+	<!-- Animate CSS -->
+	<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+	<!-- Custom CSS -->
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+</head>
+<body>
+	<!-- START Header -->
+	<h1 class="text-center text-white my-3">Star Wars RPG</h1>
+	<!-- END Header -->
+	<!-- START Container -->
+	<div class="container">
+		<!-- START Label -->
+		<div class="row">
+			<h2 class="mx-auto p-4 mt-2 mb-5" id="label"></h2>
+		</div>
+		<!-- END Label -->
+		<!-- START Character choices row -->
+		<div class="row">
+			<div class="col-10 mx-auto">
+				<div id="character-list" class="character-list"></div>
+			</div>
+		</div>
+		<!-- END Character choices row -->
+	</div>
+	<!-- END Container -->
+	<!-- Start Modal -->
+	<div class="modal fade text-white" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-secondary">
+					<h5 class="modal-title text-white mx-auto" id="modalTitle"></h5>
+				</div>
+				<div class="modal-body text-center" id="modalBody">
+					<div class="container-fluid">
+						<!-- START Cards modal row -->
+						<div class="row cards-row">
+							<!-- START Hero modal column -->
+							<div class="col-4 text-center text-success">
+								<div class="card d-inline-block" id="hero-card" style="width: 10rem;">
+									<img class="card-img-top" id="hero-modal-img">
+									<div class="card-body">
+										<p class="card-text">HEALTH: <span id="hero-modal-health"></span></p>
+										<div class="progress">
+  <div id="hero-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+</div>
+									</div>
+								</div>
+							</div>
+							<!-- END Hero modal column -->
+							<!-- START Logo modal column -->
+							<div class="col-4 text-center">
+								<div class="d-inline-block">
+									<i class="swg swg-lightsabers-2 swg-6x" style="margin-top: 83px"></i>
+								</div>
+							</div>
+							<!-- END Logo modal column -->
+							<!-- START Enemy modal column -->
+							<div class="col-4 text-center text-danger ml-auto">
+								<div class="card d-inline-block" id="enemy-card" style="width: 10rem;">
+									<img class="card-img-top" id="enemy-modal-img">
+									<div class="card-body">
+										<p class="card-text">HEALTH: <span id="enemy-modal-health"></span></p>
+										<div class="progress">
+  <div id="enemy-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+</div>
+									</div>
+								</div>
+							</div>
+							<!-- END Enemy modal column -->
+						</div>
+						<!-- END Cards modal row -->
+						<!-- START Battle log modal row -->
+						
+						<!-- END Battle log modal row -->
+					</div>
+				</div>
+				<!-- END Modal body -->
+				<div class="modal-footer d-block bg-secondary p-0">
+								<div class="mt-2" id="battle-text"></div>
+						</div>
+				<div class="modal-footer bg-secondary justify-content-center border-top-0">
+						<button type="button" class="btn btn-primary" id="attack-button" onclick="attack()">ATTACK</button>
+					</div>
+			</div>
+		</div>
+	</div>
+	<!-- END Modal -->
+
+	<!-- Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+	<!-- game.js -->
+	<script type="text/javascript" src="assets/javascript/game.js"></script>
+</body>
+</html>

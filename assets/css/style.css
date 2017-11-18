@@ -1,0 +1,39 @@
+body {
+	background: url("../images/background.jpg") no-repeat center center fixed;
+	background-size: cover;
+}
+
+* {
+	font-family: 'Stardos Stencil', cursive;
+}
+
+h2 {
+	background-color: #eee;
+	border-bottom: 2px solid #888;
+	border-radius: 30px;
+	font-family: 'Stardos Stencil', cursive;
+}
+
+.character-list {
+	text-align: center;
+}
+
+img.card-img-top, img.hero-modal-img {
+	height: 12rem;
+}
+
+.swg {
+	font-size: 10em;
+	margin: auto 0;
+}
+
+.modal-body {
+	background: url("../images/space.gif") no-repeat;
+	background-size: cover;
+	background-position-y: center; 
+}
+
+.modal-title {
+	font-family: 'Stardos Stencil', cursive;
+	font-weight: bold;
+}
